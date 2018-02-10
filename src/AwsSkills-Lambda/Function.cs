@@ -1,5 +1,7 @@
 using System;
+using System.Threading.Tasks;
 using Amazon.Lambda.Core;
+using AwsSkills.Common;
 using AwsSkills.Lambda.IntentHandlers;
 using Newtonsoft.Json;
 using Slight.Alexa.Framework.Models.Requests;
@@ -13,8 +15,7 @@ namespace AwsSkills.Lambda
 {
     public class Function
     {
-
-        public SkillResponse FunctionHandler(SkillRequest input, ILambdaContext context)
+        public async Task<SkillResponse> FunctionHandler(SkillRequest input, ILambdaContext context)
         {
             var log = context.Logger;
             var output = new SkillResponse();
@@ -31,36 +32,40 @@ namespace AwsSkills.Lambda
             if (input.GetRequestType() == typeof(ILaunchRequest))
             {
                 log.LogLine($"Default launch request made: 'Alexa open chromecast menu'");
-                responseBody = new HelpIntentHandler().Handle(null);
+                responseBody = await (new HelpIntentHandler().HandleAsync(null));
 
             }
             else if (input.GetRequestType() == typeof(IIntentRequest))
             {
                 var intentRequest = input.Request as IIntentRequest;
                 IIntentHandler intentHandler = null;
+                INotifier notifier = new SNSClientAdapter();
 
                 switch (intentRequest.Intent.Name)
                 {
                     case "PowerOff":
-                        intentHandler = new PowerOffIntentHandler();
+                        intentHandler = new PowerOffIntentHandler(notifier);
                         break;
                     case "AMAZON.PauseIntent":
-                        intentHandler = new PauseIntentHandler();
+                        intentHandler = new PauseIntentHandler(notifier);
                         break;
                     case "AMAZON.ResumeIntent":
-                        intentHandler = new ResumeIntentHandler();
+                        intentHandler = new ResumeIntentHandler(notifier);
                         break;
                     case "AMAZON.StopIntent":
-                        intentHandler = new StopIntentHandler();
+                        intentHandler = new StopIntentHandler(notifier);
                         break;
                     case "AMAZON.HelpIntent":
                         intentHandler = new HelpIntentHandler();
+                        break;
+                    case "SetVolume":
+                        intentHandler = new SetVolumeIntentHandler(notifier);
                         break;
                     default:
                         intentHandler = new FallbackIntentHandler();
                         break;
                 }
-                responseBody = intentHandler.Handle(intentRequest.Intent);
+                responseBody = await intentHandler.HandleAsync(intentRequest.Intent);
             }
 
             output.Response.Card = responseBody.Item1;

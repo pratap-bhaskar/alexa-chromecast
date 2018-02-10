@@ -1,14 +1,20 @@
 ﻿using System;
+using System.Threading.Tasks;
+using AwsSkills.Common;
 using Slight.Alexa.Framework.Models.Requests;
 using Slight.Alexa.Framework.Models.Responses;
 
 namespace AwsSkills.Lambda.IntentHandlers
 {
-    public class StopIntentHandler : IIntentHandler
+    public class StopIntentHandler : IntentHandlerBase, IIntentHandler
     {
-        public Tuple<ICard, IOutputSpeech, Reprompt> Handle(Intent intent)
+        public StopIntentHandler(INotifier notifier) : base(notifier)
         {
-            //TODO : publish SNS to a local server
+        }
+
+        public override async Task<Tuple<ICard, IOutputSpeech, Reprompt>> HandleAsync(Intent intent)
+        {
+            await _notifier.NotifyAsync(AlexaMessage.CreateMessage(Commands.StopCommand));
             return ResponseBuilder.BuildResponse("Ok", "ChromeCast - Video stopped");
         }
     }

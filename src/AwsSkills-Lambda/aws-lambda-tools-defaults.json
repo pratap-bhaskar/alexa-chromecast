@@ -13,8 +13,9 @@
     "function-runtime" : "dotnetcore2.0",
     "function-memory-size" : 128,
     "function-timeout"     : 30,
-    "function-handler"     : "AlexaChromecast::AwsSkills.Lambda.Function::FunctionHandler",
+    "function-handler"     : "AwsSkills.Lambda::AwsSkills.Lambda.Function::FunctionHandler",
     "function-name"        : "alexaChromecastSkillsFunction",
     "function-role"        : "arn:aws:iam::144615597196:role/lambda_exec_alexaChromecastSkillsFunction",
-    "environment-variables" : ""
+    "environment-variables" : "",
+    "tracing-mode"          : "PassThrough"
 }

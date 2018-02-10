@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 using Slight.Alexa.Framework.Models.Requests;
 using Slight.Alexa.Framework.Models.Responses;
 
@@ -8,7 +7,7 @@ namespace AwsSkills.Lambda.IntentHandlers
 {
     public class HelpIntentHandler : IIntentHandler
     {
-        public Tuple<ICard, IOutputSpeech, Reprompt> Handle(Intent intent)
+        public async Task<Tuple<ICard, IOutputSpeech, Reprompt>> HandleAsync(Intent intent)
         {
             //TODO : publish SNS to a local server
             return ResponseBuilder.BuildResponse(@"I can control your Chromecast, " +
