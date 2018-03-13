@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AWsSkills.Common\AwsSkills.Common.csproj" />
+    <ProjectReference Include="..\AwsSkills.Common\AwsSkills.Common.csproj" />
   </ItemGroup>
 
 </Project>
